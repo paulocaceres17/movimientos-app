@@ -1,8 +1,12 @@
+import { Subscription } from 'rxjs';
 import { Component } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from 'src/app/services/auth.service';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
+import { Store } from '@ngrx/store';
+import { AppState } from 'src/app/app.reducer';
+import * as ui from '../../shared/ui.actions';
 
 @Component({
   selector: 'app-login',
@@ -11,10 +15,14 @@ import Swal from 'sweetalert2';
 })
 export class LoginComponent {
 
+  cargando: boolean = false;
   loginForm!: FormGroup;
+  uiSubscription!: Subscription;
+
   constructor( private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router ) {
+    private router: Router,
+    private store: Store<AppState> ) {
   }
 
   ngOnInit(): void {
@@ -22,23 +30,28 @@ export class LoginComponent {
       correo: [ '', [Validators.required, Validators.email] ],
       password: [ '', Validators.required ]
     } );
+
+    this.uiSubscription = this.store.select('ui').subscribe( ui => this.cargando = ui.isLoading);
   }
 
   login() {
     if ( this.loginForm.invalid ) return;
     const { correo, password } = this.loginForm.value;
 
-    Swal.fire({
-      title: "Espere por favor!",
-      timerProgressBar: true,
-      didOpen: () => {
-        Swal.showLoading();
-      }
-    });
+    this.store.dispatch( ui.isLoading() );
+
+    // Swal.fire({
+    //   title: "Espere por favor!",
+    //   timerProgressBar: true,
+    //   didOpen: () => {
+    //     Swal.showLoading();
+    //   }
+    // });
 
     this.authService.login( correo, password )
     .then( msj => {
       if( msj.error ) {
+        this.store.dispatch( ui.stopLoading() );
         Swal.fire({
           icon: 'error',
           title: 'Oops...',
@@ -47,11 +60,15 @@ export class LoginComponent {
         });
       }
       else {
-        console.log( 'Se logueo con éxito:::', msj.user );
-        Swal.close();
+        // Swal.close();
+        this.store.dispatch( ui.stopLoading() );
         this.router.navigate( ['/'] );
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    this.uiSubscription.unsubscribe();
   }
 
 }
