@@ -22,6 +22,7 @@ import { environment } from './environments/environments';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { appReducers } from './app.reducer';
+import { OrdenMovimientosPipe } from './pipes/orden-movimientos.pipe';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { appReducers } from './app.reducer';
     DetalleComponent,
     FooterComponent,
     NavbarComponent,
-    SidebarComponent
+    SidebarComponent,
+    OrdenMovimientosPipe
   ],
   imports: [
     BrowserModule,

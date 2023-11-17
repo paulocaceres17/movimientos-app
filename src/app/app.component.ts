@@ -9,9 +9,6 @@ import { AuthService } from './services/auth.service';
 export class AppComponent {
   title = 'movimientos-app';
 
-  /**
-   *
-   */
   constructor( private authService: AuthService) {
     this.authService.initAuthListener();
   }

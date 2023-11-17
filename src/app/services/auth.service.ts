@@ -9,12 +9,15 @@ import { Observable, Subscription } from 'rxjs';
 import { getFirestore, addDoc, collection, query, where, getDocs } from "firebase/firestore"; 
 import { Store } from '@ngrx/store';
 import { AppState } from '../app.reducer';
-import { setUser } from '../auth/auth.actions';
+import { setUser, unSetUser } from '../auth/auth.actions';
+import { unSetItems } from '../movimientos/movimientos.actions';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+
+  private _userLogueado!: Usuario | null;
   private readonly app = initializeApp(environment.firebase);
   private readonly auth = getAuth(this.app);
   // readonly authState$ = authState(this.auth);
@@ -26,22 +29,23 @@ export class AuthService {
     this.authState$ = authState(this.authx);
   }
 
+  get getUserLogueado() {
+    return this._userLogueado;
+  }
+
   initAuthListener() {
     onAuthStateChanged(this.auth, (user) => {
       if (user) {
-        this.getUser(user.uid);
-        // 
-        const uid = user.uid;
-        const email = user.email;
-        console.log(uid);
+        this.getUserFirebase(user.uid);
       } else {
         console.log('none');
+        this._userLogueado = null;
       }
     });
   }
 
   
-  async getUser(uid: string) {
+  async getUserFirebase(uid: string) {
     const db = getFirestore(this.app);
     const usersRef = collection(db, "usuario");
     const q = query(usersRef, where("uid", "==", uid));
@@ -51,9 +55,9 @@ export class AuthService {
       const user = Usuario.fromFirebase( doc.data() );
       const tempUser = new Usuario(user.uid, user.nombre, user.email);
       this.store.dispatch( setUser( { user: tempUser } ));
+
+      this._userLogueado = user;
     });
-
-
   }
 
   crearUsuario( nombre: string, correo: string, password: string ) {
@@ -88,6 +92,8 @@ export class AuthService {
   }
 
   logout() {
+    this.store.dispatch( unSetUser() );
+    this.store.dispatch( unSetItems() );
     return this.auth.signOut();
   }
 

@@ -11,7 +11,6 @@ export const authGuard: CanActivateFn = (route, state) => {
   
   return authStateObs$().pipe(
     map( ( user: any ) => {
-      console.log('authStateObs:::', user);
       if ( user === null ) {
         router.navigate(['/login']);
         return false;
