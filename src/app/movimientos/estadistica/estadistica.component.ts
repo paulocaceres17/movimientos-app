@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { AppState } from 'src/app/app.reducer';
 import { Movimientos } from 'src/app/models/movimientos.model';
+import { AppStateMovimientos } from '../movimientos.reducer';
 
 @Component({
   selector: 'app-estadistica',
@@ -14,7 +14,7 @@ export class EstadisticaComponent {
   egresos: number = 0;
   totalIngresos: number = 0;
   totalEgresos: number = 0;
-  constructor( private store: Store<AppState>) { }
+  constructor( private store: Store<AppStateMovimientos>) { }
 
   ngOnInit(): void {
     this.store.select('movimientos')

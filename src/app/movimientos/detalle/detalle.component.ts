@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { AppState } from 'src/app/app.reducer';
 import { Movimientos } from 'src/app/models/movimientos.model';
 import { MovimientosService } from 'src/app/services/movimientos.service';
 import Swal from 'sweetalert2';
 import { delItem } from '../movimientos.actions';
+import { AppStateMovimientos } from '../movimientos.reducer';
 
 @Component({
   selector: 'app-detalle',
@@ -17,7 +17,7 @@ export class DetalleComponent {
   movimientos: Movimientos[] = [];
   movimientosSubs!: Subscription;
 
-  constructor( private store: Store<AppState>,
+  constructor( private store: Store<AppStateMovimientos>,
     private movimientosService: MovimientosService ) {
   }
 

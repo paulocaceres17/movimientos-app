@@ -2,9 +2,14 @@ import { map } from 'rxjs';
 import { createReducer, on } from '@ngrx/store';
 import { delItem, setItem, setItems, unSetItems } from './movimientos.actions';
 import { Movimientos } from '../models/movimientos.model';
+import { AppState } from '../app.reducer';
 
 export interface State {
     items: Movimientos[]
+}
+
+export interface AppStateMovimientos extends AppState {
+    movimientos: State
 }
 
 export const estadoInicial: State = {

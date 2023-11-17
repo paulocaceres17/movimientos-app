@@ -7,11 +7,11 @@ import * as movimientos from "./movimientos/movimientos.reducer";
 export interface AppState {
     ui: ui.State,
     user: auth.State,
-    movimientos: movimientos.State
+    // movimientos: movimientos.State
 }
 
 export const appReducers: ActionReducerMap<AppState> = {
     ui: ui.uiReducer,
     user: auth.authReducer,
-    movimientos: movimientos.movimientosReducer
+    // movimientos: movimientos.movimientosReducer
 }
